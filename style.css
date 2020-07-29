@@ -20,6 +20,11 @@ html, body {
     -ms-filter: blur(10px); 
     filter: blur(10px);  
 }
+
+#canvas canvas{
+    display:block;
+}
+
 #canvas.reveal{
     -webkit-filter: blur(0px); 
     -moz-filter: blur(0px);
