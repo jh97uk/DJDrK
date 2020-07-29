@@ -1,3 +1,4 @@
+var hasStarted = false
 var howManyFacesX;
 var howManyFacesY;
 var faceRows = [];
@@ -22,7 +23,6 @@ class Timer{
       this.startingTimestamp = timestamp
     console.log(timestamp);
     this.msElapsed = timestamp-this.startingTimestamp
-
   }
 }
 
@@ -70,7 +70,6 @@ class DancingHead{
     this.scaleTimer = new Timer(13, function(secondsElapsed, secondsRemaining){
       console.log(secondsElapsed/13);
     }, function(){
-      console.log("finished");
     })
   }
 
@@ -79,7 +78,7 @@ class DancingHead{
     this.rotationIncriment+=1;
     if(this.scale <1)
     this.scale += deltaTime/12000;
-    this.angle=Math.cos(this.rotationIncriment*6*Math.PI/180) * 30
+    this.angle=Math.cos(this.rotationIncriment*7.13*Math.PI/180) * 30
     
   }
 
@@ -91,12 +90,37 @@ class DancingHead{
     image(this.headImage, 0, 0, 636, 720);
     rotate(PI/180*0);
     translate(0, 0);
+    imageMode(CORNER);
   }
+}
+
+function prepareVideo(){
+  var player;
+
+  player = new YT.Player('player', {
+    height: '390',
+    width: '640',
+    videoId: 'gr7HUN3UdNA',
+    events: {
+      'onReady': function(event){
+        event.target.playVideo();
+        event.target.setVolume(50);
+        hasStarted = true
+      },
+      'onStateChange':function(event){
+        if(event.data === YT.PlayerState.ENDED){
+          event.target.playVideo();
+        }
+      }
+    }
+  });
+  player.setLoop(true);
 }
 
 function setup() {
   var yPadding = 20;
-  createCanvas(windowWidth, windowHeight);
+  var canvas = createCanvas(windowWidth, windowHeight);
+  canvas.parent("canvas")
   circleRadius = 40;
   howManyFacesX = Math.ceil(width/(circleRadius*2))+1;
   howManyFacesY = Math.floor(height/(circleRadius*2));
@@ -108,18 +132,28 @@ function setup() {
   
   drKMainHead = new DancingHead('head.png', (windowWidth/2)-(636/2), (windowHeight/2)-(720/2), 636, 720);
   backgroundImage = loadImage('background.jpg')
+  blur = loadImage('blur.png')
 
+  Swal.fire({
+    title:'Disclaimer',
+    text:'This site contains a highly potent dose of funk and overall badassery. Please use responsibly and consult a licensed medical professional before proceeding.'
+  }).then(function(){
+    document.getElementById('canvas').classList.add('reveal');
+    prepareVideo()
+  });
 }
 
 function draw() {
   background(220);
-  image(backgroundImage, windowWidth/2, windowHeight/2, windowWidth, windowHeight)
+  image(backgroundImage, 0, 0, windowWidth, windowHeight)
 
   for(let row of faceRows){
     row.update();
     row.display();
   }
 
-  drKMainHead.update();
-  drKMainHead.display();
+  if(hasStarted){
+    drKMainHead.update();
+    drKMainHead.display();
+  }
 }

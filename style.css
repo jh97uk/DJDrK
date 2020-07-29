@@ -1,8 +1,43 @@
 html, body {
     margin: 0;
     padding: 0;
+    width:100%;
+    height:100%;
 }
-canvas {
+#player{
+    display:none;
+}
+#canvas {
     display: block;
+    float:left;
+    width:100%;
+    height:100%;
+    padding:0px;
+    margin:0px;
+    -webkit-filter: blur(10px); 
+    -moz-filter: blur(10px);
+    -o-filter: blur(10px); 
+    -ms-filter: blur(10px); 
+    filter: blur(10px);  
 }
-  
+#canvas.reveal{
+    -webkit-filter: blur(0px); 
+    -moz-filter: blur(0px);
+    -o-filter: blur(0px); 
+    -ms-filter: blur(0px); 
+    filter: blur(0px);  
+    -webkit-transition: 0.5s -webkit-filter linear;
+    -o-transition: 0.5s -o-filter linear;
+}
+
+#swal2-title{
+    color: #98ff98;
+}
+
+#swal2-content, #swal2-title{
+    font-family: sans-serif;
+}
+
+.swal2-popup{
+    background:#122539;
+}
