@@ -6,6 +6,7 @@ var faceRows = [];
 var startingFaceY = 0;
 var dancingHead;
 var backgroundImage;
+var music;
 
 class Timer{
   constructor(seconds, onIncriment, callOnceFinished){
@@ -39,7 +40,6 @@ class FaceFallRow{
     for(var column = 0; column < this.columns; column++){
       this.faceImagesOrdered.push(faceImages[Math.floor(Math.random()*this.faceImages.length)]);
     }
-  
   }
 
   update(){ 
@@ -93,27 +93,32 @@ class DancingHead{
   }
 }
 
-function prepareVideo(){
-  var player;
-
-  player = new YT.Player('player', {
-    height: '390',
-    width: '640',
-    videoId: 'gr7HUN3UdNA',
-    events: {
-      'onReady': function(event){
-        event.target.playVideo();
-        event.target.setVolume(50);
-        hasStarted = true
-      },
-      'onStateChange':function(event){
-        if(event.data === YT.PlayerState.ENDED){
+function start(config){
+  if(config.music.type == "file"){
+    document.getElementById('canvas').classList.add('reveal');
+    document.getElementById("musicPlayer").play()
+    hasStarted = true
+  } else if (config.music.type == "youtube"){
+    var player;
+    player = new YT.Player('player', {
+      height: '390',
+      width: '640',
+      videoId: config.music.src,
+      events: {
+        'onReady': function(event){
+          document.getElementById('canvas').classList.add('reveal');
           event.target.playVideo();
+          event.target.setVolume(50);
+          hasStarted = true
+        },
+        'onStateChange':function(event){
+          if(event.data === YT.PlayerState.ENDED){
+            event.target.playVideo();
+          }
         }
       }
-    }
-  });
-  player.setLoop(true);
+    });
+  }
 }
 
 function setup() {
@@ -127,6 +132,16 @@ function setup() {
     howManyFacesY = Math.floor(height/(circleRadius*2));
     startingFaceY = height-(howManyFacesY*((circleRadius*2)+20))
     var rainImages = [];
+    
+    document.title = config.title;
+
+    if(config.music.type == "file"){
+      music = document.createElement("audio");
+      music.setAttribute("src",config.music.src);
+      music.setAttribute("id", "musicPlayer");
+      music.setAttribute("loop", true);
+      document.body.appendChild(music);
+    }
     
     for(const image of config.rainImages){
       rainImages.push(loadImage(image))
@@ -143,12 +158,9 @@ function setup() {
       title:'Disclaimer',
       text:'This site contains a highly potent dose of funk and overall badassery. Please use responsibly and consult a licensed medical professional before proceeding.'
     }).then(function(){
-      document.getElementById('canvas').classList.add('reveal');
-      prepareVideo()
+      start(config);
     });
   });
-
-  
 }
 
 function draw() {

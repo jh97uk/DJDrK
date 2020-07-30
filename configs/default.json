@@ -1,5 +1,9 @@
 {
     "title":"DJ Dr K",
+    "music":{
+        "type":"file",
+        "src":"media/drk/aum400.mp3"
+    },
     "background":"media/drk/background.jpg",
     "dancingHead":"media/drk/head.png",
     "rainImages":[
