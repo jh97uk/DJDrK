@@ -1,0 +1,13 @@
+{
+    "title":"DJ Dr K",
+    "background":"media/drk/background.jpg",
+    "dancingHead":"media/drk/head.png",
+    "rainImages":[
+        "media/drk/5headpog.png",
+        "media/drk/drkomega.png",
+        "media/drk/frenchlaugh.png",
+        "media/drk/frenchpog.png",
+        "media/drk/pog.png",
+        "media/drk/drkshok.png"
+    ]
+}

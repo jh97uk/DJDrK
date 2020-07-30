@@ -1,12 +1,11 @@
+var config;
 var hasStarted = false
 var howManyFacesX;
 var howManyFacesY;
 var faceRows = [];
 var startingFaceY = 0;
-var drK5Head;
-var drKMainHead;
+var dancingHead;
 var backgroundImage;
-scaler = 1;
 
 class Timer{
   constructor(seconds, onIncriment, callOnceFinished){
@@ -118,32 +117,43 @@ function prepareVideo(){
 }
 
 function setup() {
-  var yPadding = 20;
-  var canvas = createCanvas(windowWidth, windowHeight);
-  canvas.parent("canvas")
-  circleRadius = 40;
-  howManyFacesX = Math.ceil(width/(circleRadius*2))+1;
-  howManyFacesY = Math.floor(height/(circleRadius*2));
-  startingFaceY = height-(howManyFacesY*((circleRadius*2)+20))
-  console.log(startingFaceY)
-  for(var row = 0; row < howManyFacesY; row++){
-    faceRows.push(new FaceFallRow([loadImage('5headpog.png'), loadImage('drkomega.png'), loadImage('frenchlaugh.png'), loadImage('frenchpog.png'), loadImage('pog.png'), loadImage('drkshok.png')], 0, startingFaceY+(((circleRadius*2)+yPadding)*row), howManyFacesX, circleRadius));
-  }
-  
-  drKMainHead = new DancingHead('head.png', (windowWidth/2)-(636/2), (windowHeight/2)-(720/2), 636, 720);
-  backgroundImage = loadImage('background.jpg')
-  blur = loadImage('blur.png')
+  fetch('configs/default.json').then(res => res.json()).then(function(response){
+    config = response
+    var yPadding = 20;
+    var canvas = createCanvas(windowWidth, windowHeight);
+    canvas.parent("canvas")
+    circleRadius = 40;
+    howManyFacesX = Math.ceil(width/(circleRadius*2))+1;
+    howManyFacesY = Math.floor(height/(circleRadius*2));
+    startingFaceY = height-(howManyFacesY*((circleRadius*2)+20))
+    var rainImages = [];
+    
+    for(const image of config.rainImages){
+      rainImages.push(loadImage(image))
+    }
 
-  Swal.fire({
-    title:'Disclaimer',
-    text:'This site contains a highly potent dose of funk and overall badassery. Please use responsibly and consult a licensed medical professional before proceeding.'
-  }).then(function(){
-    document.getElementById('canvas').classList.add('reveal');
-    prepareVideo()
+    for(var row = 0; row < howManyFacesY; row++){
+      faceRows.push(new FaceFallRow(rainImages, 0, startingFaceY+(((circleRadius*2)+yPadding)*row), howManyFacesX, circleRadius));
+    }
+
+    dancingHead = new DancingHead(config.dancingHead, (windowWidth/2)-(636/2), (windowHeight/2)-(720/2), 636, 720);
+    backgroundImage = loadImage(config.background)
+
+    Swal.fire({
+      title:'Disclaimer',
+      text:'This site contains a highly potent dose of funk and overall badassery. Please use responsibly and consult a licensed medical professional before proceeding.'
+    }).then(function(){
+      document.getElementById('canvas').classList.add('reveal');
+      prepareVideo()
+    });
   });
+
+  
 }
 
 function draw() {
+  if(!config)
+    return
   background(220);
   image(backgroundImage, 0, 0, windowWidth, windowHeight)
 
@@ -153,7 +163,7 @@ function draw() {
   }
 
   if(hasStarted){
-    drKMainHead.update();
-    drKMainHead.display();
+    dancingHead.update();
+    dancingHead.display();
   }
 }
